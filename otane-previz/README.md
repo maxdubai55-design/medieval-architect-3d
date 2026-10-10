@@ -54,12 +54,22 @@ Un plan isolé se vérifie en images fixes : `node tools/still.mjs 05 /tmp/contr
 
 ## Animatique des planches de storyboard
 
-`animatic/` anime les planches de storyboard (dossier `animatic/src/`), case par case : mouvement de caméra sur l'image, effets lumineux posés sur les réacteurs, tirs, écrans et hologrammes, particules, titre de case et légende. Les personnages ne bougent pas : c'est un *motion board*.
+`animatic/` anime les planches de storyboard (dossier `animatic/src/`), case par case : mouvement de caméra sur l'image (travelling, zoom, roulis), effets lumineux posés sur les réacteurs, tirs, écrans, hologrammes, faisceaux et vortex du Sillage, particules, titre de case et légende. Les personnages ne bougent pas : c'est un *motion board*.
+
+Une configuration par film, dans `animatic/` :
+
+| Configuration | Contenu |
+|---|---|
+| `cfg_sc1` | Scène clé 1 : planches 1/2 et 2/2 (12 cases) |
+| `cfg_sc2` | Scène clé 2 : planches 1/3 à 3/3 (18 cases) |
+| `cfg_sc3` | Scène clé 3 : planches 1/3 à 3/3 (18 cases) |
+| `cfg_planches34` | Première série, planches 3 et 4 |
 
 ```
-python3 animatic/animatic.py out/animatic/video.mp4          # image (≈ 2 min 15)
-python3 animatic/audio.py out/animatic/timeline.json out/animatic/audio.wav
-ffmpeg -i out/animatic/video.mp4 -i out/animatic/audio.wav -c:v copy -c:a aac -shortest out/animatic/animatique.mp4
+python3 animatic/animatic.py cfg_sc1 out/animatic/sc1.mp4          # image
+python3 animatic/animatic.py cfg_sc1 out/animatic/test/x.mp4 24 12.5,30   # images de contrôle
+python3 animatic/audio.py cfg_sc1 out/animatic/sc1.wav               # son
+bash animatic/render.sh sc1 1                                        # image + son + assemblage
 ```
 
-Les cases, leurs cadrages et leurs effets se règlent dans la liste `PANELS` de `animatic/animatic.py`. Dépendance : `opencv-python-headless`.
+Les cases sont repérées automatiquement dans la planche (`layout.py`). Dans une configuration, positions et cadrages s'écrivent en fractions de case (`cfgutil.case`). Dépendance : `opencv-python-headless`.
