@@ -51,3 +51,15 @@ Un plan isolé se vérifie en images fixes : `node tools/still.mjs 05 /tmp/contr
 - `src/engine.js` : rendu, cadre 2,39:1, bandeau technique, sous-titres, grain, fondus.
 - `src/lib/` : modèles procéduraux (vaisseaux, stations, personnages), effets (Sillage, étoiles, halos), interfaces embarquées.
 - `src/scenes/sNN-*.js` : une séquence par fichier. Chaque plan déclare sa caméra et sa fiche technique (valeur de plan, focale, mouvement, lumière, intention) ; la même donnée alimente la vidéo et le découpage.
+
+## Animatique des planches de storyboard
+
+`animatic/` anime les planches de storyboard (dossier `animatic/src/`), case par case : mouvement de caméra sur l'image, effets lumineux posés sur les réacteurs, tirs, écrans et hologrammes, particules, titre de case et légende. Les personnages ne bougent pas : c'est un *motion board*.
+
+```
+python3 animatic/animatic.py out/animatic/video.mp4          # image (≈ 2 min 15)
+python3 animatic/audio.py out/animatic/timeline.json out/animatic/audio.wav
+ffmpeg -i out/animatic/video.mp4 -i out/animatic/audio.wav -c:v copy -c:a aac -shortest out/animatic/animatique.mp4
+```
+
+Les cases, leurs cadrages et leurs effets se règlent dans la liste `PANELS` de `animatic/animatic.py`. Dépendance : `opencv-python-headless`.
