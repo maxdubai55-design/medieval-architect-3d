@@ -14,7 +14,8 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent / 'tools'))
 sys.path.insert(0, str(ROOT))
 import score  # noqa: E402
-sys.argv = sys.argv[:3]
+ARGS = sys.argv[1:3]
+sys.argv = sys.argv[:1]
 import animatic  # noqa: E402
 
 SR = score.SR
@@ -52,7 +53,7 @@ BLOCKS = [
 
 
 def main():
-    tl = json.loads(Path(sys.argv[1]).read_text())
+    tl = json.loads(Path(ARGS[0]).read_text())
     segs = {s['id']: s for s in tl['segs']}
     panels = {p['id']: p for p in animatic.PANELS}
     total = tl['total']
@@ -87,12 +88,12 @@ def main():
         print('bloc', bi, mood, f'{start:.1f}-{end:.1f}')
     mix = mix[: int(total * SR)]
     mix = np.tanh(mix * 1.1) * 0.92
-    with wave.open(sys.argv[2], 'wb') as w:
+    with wave.open(ARGS[1], 'wb') as w:
         w.setnchannels(2)
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes((mix * 32767).astype(np.int16).tobytes())
-    print('audio', sys.argv[2])
+    print('audio', ARGS[1])
 
 
 if __name__ == '__main__':
