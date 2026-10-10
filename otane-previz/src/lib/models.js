@@ -126,7 +126,7 @@ export function greebles(parent, { count = 40, size = [0.6, 0.4, 0.8], area = [4
 // Tuyère avec halo, intensité réglable via userData.setThrust(k).
 function engine(parent, p, radius, color = 0x8fc8ff) {
   const nozzle = part(parent, cyl(radius * 0.8, radius, radius * 1.6, 18), hullMat('dark'), p, [Math.PI / 2, 0, 0]);
-  const core = part(parent, new THREE.CircleGeometry(radius * 0.7, 18), lightMat(color, 3), [p[0], p[1], p[2] - radius * 0.81], [0, Math.PI, 0]);
+  const core = part(parent, new THREE.CircleGeometry(radius * 0.7, 18), lightMat(new THREE.Color(color).multiplyScalar(0.7), 3), [p[0], p[1], p[2] - radius * 0.81], [0, Math.PI, 0]);
   const g = glow(color, radius * 4, 0.6);
   g.position.set(p[0], p[1], p[2] - radius * 1.2);
   parent.add(g);
@@ -142,7 +142,7 @@ function attachEngines(grp, engines) {
     engines.forEach((e, i) => {
       const kk = Array.isArray(k) ? k[i] ?? k[0] : k;
       if (which !== undefined && which !== i) return;
-      e.core.material.emissiveIntensity = 0.2 + 1.3 * kk;
+      e.core.material.emissiveIntensity = 0.15 + 0.9 * kk;
       e.g.material.opacity = 0.08 + 0.55 * kk;
       e.g.scale.setScalar(e.radius * (2 + 3.5 * kk));
       e.plume.material.opacity = 0.6 * kk;
@@ -339,7 +339,7 @@ export function mosodeBomber() {
 export function cruiser({ length = 600 } = {}) {
   const g = new THREE.Group();
   const s = length / 600;
-  const hull = hullMat('dark', { color: 0x6a5652, metalness: 0.6 });
+  const hull = hullMat('worn', { color: 0x8a7a76, metalness: 0.5, roughness: 0.55 });
   part(g, box(90 * s, 60 * s, 600 * s), hull);
   part(g, cyl(10 * s, 60 * s, 160 * s, 6), hull, [0, 0, 380 * s], [Math.PI / 2, 0, 0], [1, 0.6, 1]);
   part(g, box(160 * s, 20 * s, 200 * s), hull, [0, -10 * s, -150 * s]);
@@ -734,7 +734,7 @@ export function heart({ radius = 5 } = {}) {
     g.add(holder);
     rings.push(ring);
   }
-  const light = new THREE.PointLight(0x3dff9a, 40, radius * 12, 1.5);
+  const light = new THREE.PointLight(0x3dff9a, 40, radius * 16, 1.2);
   g.add(light);
   g.userData = { sphere, mat: m, rings, halo, light };
   g.userData.update = (t, k = 1) => {
@@ -744,7 +744,7 @@ export function heart({ radius = 5 } = {}) {
     rings[1].rotation.z = -t * 0.13;
     rings[2].rotation.z = t * 0.08;
     halo.material.opacity = 0.18 * k;
-    light.intensity = 30 * k;
+    light.intensity = (g.userData.lightGain ?? 30) * k;
   };
   return g;
 }
@@ -1048,5 +1048,38 @@ export function cradle() {
   const m = hullMat('dark', { color: 0x40444a });
   for (const [x, z] of [[-1.5, 1.5], [1.5, 1.5], [-1.5, -1.5], [1.5, -1.5]]) part(g, cyl(0.2, 0.3, 2.2, 8), m, [x, 1.1, z]);
   part(g, box(4, 0.3, 4.4), m, [0, 0.15, 0]);
+  return g;
+}
+
+// Convoi du Cœur : la chambre entière détachée, fixée sur un châssis de 200 m, six remorqueurs autour.
+export function convoy() {
+  const g = new THREE.Group();
+  const frameM = hullMat('dark', { color: 0x70767c, metalness: 0.7 });
+  for (const [x, y] of [[-14, -14], [14, -14], [-14, 14], [14, 14]]) part(g, box(2, 2, 200), frameM, [x, y, 0]);
+  for (let i = 0; i < 11; i++) {
+    const z = -100 + i * 20;
+    part(g, box(30, 1.2, 1.2), frameM, [0, -14, z]);
+    part(g, box(30, 1.2, 1.2), frameM, [0, 14, z]);
+    part(g, box(1.2, 30, 1.2), frameM, [-14, 0, z]);
+    part(g, box(1.2, 30, 1.2), frameM, [14, 0, z]);
+  }
+  const cage = new THREE.Mesh(new THREE.IcosahedronGeometry(12, 1), new THREE.MeshStandardMaterial({ color: 0x8a9298, wireframe: true, metalness: 0.8 }));
+  g.add(cage);
+  const h = heart({ radius: 5 });
+  g.add(h);
+  g.userData.heart = h;
+  const tugs = [];
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const tg = tug();
+    tg.scale.setScalar(1.6);
+    tg.position.set(Math.cos(a) * 26, Math.sin(a) * 26, -60 + (i % 2) * 40);
+    tg.rotation.y = Math.PI;
+    g.add(tg);
+    tugs.push(tg);
+    const cableL = part(g, box(0.3, 0.3, 30), frameM, [Math.cos(a) * 19, Math.sin(a) * 19, -60 + (i % 2) * 40 + 10]);
+    cableL.lookAt(0, 0, 0);
+  }
+  g.userData.tugs = tugs;
   return g;
 }

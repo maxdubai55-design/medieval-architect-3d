@@ -249,20 +249,34 @@ export class Film {
   drawSubs(t) {
     const subs = this.mod.subs || [];
     const g = this.g;
-    const active = subs.filter(([s, d]) => t >= s && t < s + d);
+    const active = subs.filter(([s, d]) => t >= s && t < s + d).slice(-2);
     if (!active.length) return;
     g.save();
     g.textAlign = 'center';
-    const lines = active.slice(-2);
-    let y = BAR + PIC_H + 38 - (lines.length - 1) * 30;
-    for (const [s, d, who, text] of lines) {
+    // Découpe en lignes de 1100 px maximum
+    const rows = [];
+    for (const [s, d, who, text] of active) {
+      const narr = who === '*';
+      g.font = narr ? `italic 300 23px ${FONT}` : `500 24px ${FONT}`;
+      const body = narr ? text : `— ${text}`;
+      const words = body.split(' ');
+      let line = '';
+      const lines = [];
+      for (const w of words) {
+        const test = line ? `${line} ${w}` : w;
+        if (g.measureText(test).width > 1060 && line) { lines.push(line); line = w; } else line = test;
+      }
+      lines.push(line);
       const a = smooth(inv(s, s + 0.15, t)) * (1 - smooth(inv(s + d - 0.15, s + d, t)));
+      lines.forEach((l, i) => rows.push({ l, a, who: i === 0 ? who : null, narr }));
+    }
+    const shown = rows.slice(-3);
+    const lh = 28;
+    let y = BAR + PIC_H + 50 - ((shown.length - 1) * lh) / 2 - 6;
+    for (const { l, a, who, narr } of shown) {
       g.globalAlpha = a;
-      g.font = `500 24px ${FONT}`;
-      const body = who === '*' ? text : `— ${text}`;
-      const isNarr = who === '*';
-      if (isNarr) g.font = `italic 300 23px ${FONT}`;
-      const tw = g.measureText(body).width;
+      g.font = narr ? `italic 300 23px ${FONT}` : `500 24px ${FONT}`;
+      const tw = g.measureText(l).width;
       if (who && who !== '*') {
         g.font = `600 11px ${FONT}`;
         g.letterSpacing = '2px';
@@ -273,9 +287,9 @@ export class Film {
         g.textAlign = 'center';
         g.font = `500 24px ${FONT}`;
       }
-      g.fillStyle = isNarr ? 'rgba(215,225,220,0.92)' : '#f4f4f0';
-      g.fillText(body, OUT_W / 2, y + 6);
-      y += 32;
+      g.fillStyle = narr ? 'rgba(215,225,220,0.92)' : '#f4f4f0';
+      g.fillText(l, OUT_W / 2, y + 6);
+      y += lh;
     }
     g.restore();
   }

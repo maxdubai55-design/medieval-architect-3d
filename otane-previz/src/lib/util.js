@@ -70,3 +70,17 @@ export function mmss(sec) {
   const s = sec % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
+
+// Place un objet sur une trajectoire à images-clés et l'oriente vers l'avant.
+export function fly(obj, path, t, { bank = 0, ahead = 0.4 } = {}) {
+  const p = keys(path, t, (x) => x);
+  const q = keys(path, t + ahead, (x) => x);
+  obj.position.set(p[0], p[1], p[2]);
+  if (Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]) > 1e-3) obj.lookAt(q[0], q[1], q[2]);
+  if (bank) {
+    const r = keys(path, t + ahead * 2, (x) => x);
+    const turn = (r[0] - q[0]) * (q[2] - p[2]) - (r[2] - q[2]) * (q[0] - p[0]);
+    obj.rotateZ(Math.max(-1.2, Math.min(1.2, -turn * bank)));
+  }
+  return p;
+}
