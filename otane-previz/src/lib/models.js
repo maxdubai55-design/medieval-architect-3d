@@ -13,7 +13,7 @@ export function hullTexture(kind = 'worn') {
   const c = document.createElement('canvas');
   c.width = c.height = 512;
   const g = c.getContext('2d');
-  const base = { worn: '#8d8e8c', clean: '#c9ccd0', dark: '#2a2c30', black: '#121316', rust: '#7b6a58', teal: '#3f5d63' }[kind] || '#888';
+  const base = { silver: '#d4d6d2', worn: '#8d8e8c', clean: '#c9ccd0', dark: '#2a2c30', black: '#121316', rust: '#7b6a58', teal: '#3f5d63' }[kind] || '#888';
   g.fillStyle = base;
   g.fillRect(0, 0, 512, 512);
   // Plaques
@@ -224,36 +224,66 @@ export function glideShip() {
 
 // L'Indocile : biplace ancien, épaules larges, nez étroit greffé, deux masses de propulsion disproportionnées.
 export function indocile({ mark = false } = {}) {
+  // D'après la couverture : coque rivetée argent et laiton, nez effilé, verrière tandem, deux gros réacteurs latéraux.
   const g = new THREE.Group();
-  const hull = hullMat('worn', { color: 0xaab0b4 });
-  const band = hullMat('dark', { color: 0x777777 });
-  const patch = hullMat('rust', { color: 0xb0a090 });
-  const dark = hullMat('dark');
-  part(g, box(3.4, 1.6, 5.2), hull, [0, 0, 0]);
-  part(g, box(3.45, 0.4, 5.25), band, [0, 0.3, 0]); // bande sombre sous le gris
-  part(g, cyl(0.45, 1.0, 4.2, 10), hull, [0, 0.05, 4.4], [Math.PI / 2, 0, 0]); // nez étroit
-  // Verrière tandem, poste arrière surélevé
-  part(g, new THREE.CapsuleGeometry(0.62, 2.6, 6, 12), glassMat(0xbfe6ff, 0.4), [0, 0.95, 1.6], [Math.PI / 2, 0, 0], [1, 1, 0.8]);
-  part(g, new THREE.SphereGeometry(0.62, 14, 8), glassMat(0xbfe6ff, 0.4), [0, 1.15, 0.2], [0, 0, 0], [1, 0.9, 1.1]);
+  const hull = hullMat('silver', { color: 0xf2f0ea, metalness: 0.55, roughness: 0.35 });
+  const brass = new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.9, roughness: 0.3 });
+  const dark = hullMat('dark', { color: 0x5a5c60 });
+  part(g, cyl(0.95, 0.95, 6, 20), hull, [0, 0, 0], [Math.PI / 2, 0, 0]); // fuselage
+  part(g, cyl(0.12, 0.95, 4.2, 20), hull, [0, 0, 5.1], [Math.PI / 2, 0, 0]); // nez effilé
+  part(g, new THREE.SphereGeometry(0.13, 10, 8), brass, [0, 0, 7.2]);
+  part(g, cyl(0.95, 0.55, 1.6, 20), hull, [0, 0, -3.8], [Math.PI / 2, 0, 0]); // cône arrière
+  for (const z of [2.95, 1.2, -1.2, -2.95]) part(g, cyl(0.98, 0.98, 0.18, 20), brass, [0, 0, z], [Math.PI / 2, 0, 0]); // cerclages laiton
+  part(g, box(0.6, 0.05, 2.4), brass, [0, -0.97, 0.6]); // panneau ventral laiton
+  // Verrière tandem
+  part(g, new THREE.CapsuleGeometry(0.55, 2.4, 6, 14), glassMat(0xcfeaff, 0.45), [0, 0.78, 1.3], [Math.PI / 2, 0, 0], [1, 1, 0.85]);
+  for (const z of [0.1, 1.3, 2.5]) part(g, new THREE.TorusGeometry(0.56, 0.035, 6, 20, Math.PI), brass, [0, 0.62, z]);
+  // Réacteurs latéraux
   for (const sx of [-1, 1]) {
-    part(g, cyl(1.05, 1.25, 4.6, 16), dark, [sx * 2.35, -0.1, -1.6], [Math.PI / 2, 0, 0]);
-    part(g, box(0.15, 0.7, 3.8), hull, [sx * 1.78, -0.45, 0.6], [0, 0, sx * 0.25]); // ailettes repliées
+    part(g, cyl(0.82, 0.82, 4.8, 20), hull, [sx * 1.85, -0.2, -1.8], [Math.PI / 2, 0, 0]);
+    part(g, cyl(0.9, 0.86, 0.5, 20), brass, [sx * 1.85, -0.2, 0.75], [Math.PI / 2, 0, 0]); // entrée d'air
+    part(g, cyl(0.6, 0.6, 0.1, 16), dark, [sx * 1.85, -0.2, 1.0], [Math.PI / 2, 0, 0]);
+    part(g, cyl(0.86, 0.86, 0.25, 20), brass, [sx * 1.85, -0.2, -2.6], [Math.PI / 2, 0, 0]);
+    part(g, box(1.2, 0.12, 2.0), hull, [sx * 1.0, -0.2, -1.4], [0, sx * 0.3, 0]); // pylône
+    part(g, box(1.8, 0.08, 1.3), hull, [sx * 3.2, -0.35, -2.6], [0, sx * 0.5, sx * -0.08]); // aile en flèche
+    part(g, box(0.5, 0.06, 0.5), brass, [sx * 3.95, -0.4, -3.0], [0, sx * 0.5, 0]);
   }
-  part(g, box(0.18, 1.2, 1.8), patch, [-1.72, 0.05, 1.5]); // panneau dépareillé flanc gauche
-  part(g, cyl(0.12, 0.12, 2, 8), dark, [0.45, -0.55, 4.8], [Math.PI / 2, 0, 0]); // canons sous le nez
-  part(g, cyl(0.12, 0.12, 2, 8), dark, [-0.45, -0.55, 4.8], [Math.PI / 2, 0, 0]);
+  part(g, box(0.08, 1.3, 1.6), hull, [0, 1.1, -3.4], [0.5, 0, 0]); // dérive dorsale
+  part(g, cyl(0.1, 0.1, 1.8, 8), dark, [0.4, -0.6, 4.4], [Math.PI / 2, 0, 0]); // canons sous le nez
+  part(g, cyl(0.1, 0.1, 1.8, 8), dark, [-0.4, -0.6, 4.4], [Math.PI / 2, 0, 0]);
+  // Nom peint sur les deux flancs
+  const c = document.createElement('canvas');
+  c.width = 512;
+  c.height = 96;
+  const x = c.getContext('2d');
+  x.fillStyle = '#e8e6de';
+  x.fillRect(0, 0, 512, 96);
+  x.strokeStyle = '#1a1c24';
+  x.lineWidth = 4;
+  x.strokeRect(6, 6, 500, 84);
+  x.font = 'bold 54px Inter, Arial, sans-serif';
+  x.fillStyle = '#1a2440';
+  x.textAlign = 'center';
+  x.fillText("L'INDOCILE", 256, 68);
+  const nt = new THREE.CanvasTexture(c);
+  nt.colorSpace = THREE.SRGBColorSpace;
+  for (const sx of [-1, 1]) {
+    const nm = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 0.38), new THREE.MeshStandardMaterial({ map: nt, roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -2 }));
+    nm.position.set(sx * 0.97, 0.1, -0.3);
+    nm.rotation.y = sx * Math.PI / 2;
+    g.add(nm);
+  }
   const turret = new THREE.Group();
-  turret.position.set(0, -0.95, -0.4);
-  part(turret, new THREE.SphereGeometry(0.55, 12, 8), dark);
-  part(turret, cyl(0.1, 0.1, 1.6, 6), dark, [0.15, 0, 0.8], [Math.PI / 2, 0, 0]);
-  part(turret, cyl(0.1, 0.1, 1.6, 6), dark, [-0.15, 0, 0.8], [Math.PI / 2, 0, 0]);
+  turret.position.set(0, -1.05, -0.6);
+  part(turret, new THREE.SphereGeometry(0.45, 12, 8), dark);
+  part(turret, cyl(0.08, 0.08, 1.4, 6), dark, [0.12, 0, 0.7], [Math.PI / 2, 0, 0]);
+  part(turret, cyl(0.08, 0.08, 1.4, 6), dark, [-0.12, 0, 0.7], [Math.PI / 2, 0, 0]);
   g.add(turret);
   g.userData.turret = turret;
-  greebles(g, { count: 40, size: [0.35, 0.25, 0.5], area: [3, 0.2, 4.5], center: [0, 0.85, -0.6], seed: 17, mat: dark });
-  const e = [engine(g, [-2.35, -0.1, -4.0], 0.95, 0xa0d0ff), engine(g, [2.35, -0.1, -4.0], 0.95, 0xa0d0ff)];
+  const e = [engine(g, [-1.85, -0.2, -4.6], 0.75, 0xffd6a0), engine(g, [1.85, -0.2, -4.6], 0.75, 0xffd6a0)];
   attachEngines(g, e);
-  navLights(g, [[[2.4, 0.9, -1], 0x30ff60, 0.6], [[-2.4, 0.9, -1], 0xff3030, 0.6], [[0, 0.95, -2.6], 0xffffff, 0.4]]);
-  g.userData.cockpit = cockpitLight(g, [0, 1.3, 1.2], 0x9fc8ff, 4, 5);
+  navLights(g, [[[4.0, -0.35, -3.0], 0x30ff60, 0.6], [[-4.0, -0.35, -3.0], 0xff3030, 0.6], [[0, 1.75, -3.9], 0xffffff, 0.4]]);
+  g.userData.cockpit = cockpitLight(g, [0, 1.1, 1.3], 0xffd8a0, 4, 5);
   if (mark) addTessMark(g, mark === 'burnt');
   return g;
 }
@@ -280,9 +310,9 @@ export function addTessMark(g, burnt = false) {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   const m = new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
-  const p = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.9), m);
-  p.position.set(0.62, 0.32, 4.7);
-  p.rotation.set(0, Math.PI / 2 - 0.35, 0);
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.6), m);
+  p.position.set(0.74, 0.22, 4.0);
+  p.rotation.set(0, Math.PI / 2 - 0.2, 0);
   g.add(p);
   g.userData.mark = p;
   return p;
@@ -556,7 +586,7 @@ export function deadBeacon() {
 export function couronne({ scale = 1 } = {}) {
   const g = new THREE.Group();
   const s = scale;
-  const hull = hullMat('clean', { color: 0xc6cad2, metalness: 0.55, roughness: 0.45 });
+  const hull = hullMat('clean', { color: 0xeee8dc, metalness: 0.55, roughness: 0.4 });
   const dark = hullMat('dark');
   const core = part(g, new THREE.SphereGeometry(120 * s, 48, 32), hull);
   part(g, cyl(30 * s, 30 * s, 520 * s, 24), hull, [0, 0, 0]);
@@ -807,55 +837,157 @@ export function human({ body = 0x2e3440, skin = 0x8a6a56, hair = 0x1c1410, femal
   return g;
 }
 
-// Glide (Alyde) : tête large, peau lisse, mâchoire puissante, courtes vibrisses, yeux sombres, mains palmées.
-export function alyde({ skin = 0x4c6064, suit = 0x1e2a2e } = {}) {
+// Texture d'écailles d'amphibien : turquoise sur le crâne, vert pâle vers la gorge.
+function scaleTexture(old = false) {
+  const key = 'scales-' + old;
+  if (cache.has(key)) return cache.get(key);
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const grd = g.createLinearGradient(0, 0, 0, 256);
+  grd.addColorStop(0, old ? '#7a9a92' : '#1f8a98');
+  grd.addColorStop(0.55, old ? '#8aa898' : '#2f9a86');
+  grd.addColorStop(1, old ? '#b8c8a8' : '#a8d4a0');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 256, 256);
+  g.strokeStyle = 'rgba(10,40,40,0.35)';
+  g.lineWidth = 1;
+  for (let y = 0; y < 270; y += 9) for (let x = (y / 9) % 2 ? 4.5 : 0; x < 270; x += 9) {
+    g.beginPath();
+    g.arc(x, y, 4.6, 0, Math.PI);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(3, 2);
+  cache.set(key, t);
+  return t;
+}
+
+// Glide (Alyde), d'après la couverture : tête d'amphibien à écailles bleu-vert, yeux ambrés aux lourdes paupières,
+// longues moustaches pâles, mains palmées, long manteau bleu canard brodé d'or, médaillon.
+export function alyde({ old = false } = {}) {
   const g = new THREE.Group();
-  const sk = new THREE.MeshStandardMaterial({ color: skin, roughness: 0.22, metalness: 0.08 });
-  const su = new THREE.MeshStandardMaterial({ color: suit, roughness: 0.6, metalness: 0.2 });
-  const eye = new THREE.MeshStandardMaterial({ color: 0x020304, roughness: 0.02, metalness: 0.6 });
-  part(g, new THREE.CapsuleGeometry(0.3, 0.6, 4, 12), su, [0, 1.25, 0], [0, 0, 0], [1.25, 1, 0.85]);
-  part(g, box(0.5, 0.08, 0.3), hullMat('dark'), [0, 1.62, 0]); // col de combinaison
-  part(g, cyl(0.15, 0.19, 0.2, 14), sk, [0, 1.7, 0.02]);
+  const sk = new THREE.MeshStandardMaterial({ map: scaleTexture(old), roughness: 0.35, metalness: 0.05 });
+  const coatC = old ? 0x5a4a38 : 0x1d4a5a;
+  const coat = new THREE.MeshStandardMaterial({ color: coatC, roughness: 0.7 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.9, roughness: 0.3 });
+  const shirt = new THREE.MeshStandardMaterial({ color: old ? 0x4a4038 : 0x23343a, roughness: 0.6 });
+  // Long manteau : des épaules aux genoux
+  part(g, cyl(0.3, 0.42, 1.15, 18), coat, [0, 0.98, 0]);
+  part(g, new THREE.CapsuleGeometry(0.3, 0.3, 4, 14), coat, [0, 1.38, 0], [0, 0, 0], [1.3, 1, 0.9]);
+  part(g, new THREE.TorusGeometry(0.42, 0.025, 6, 24), gold, [0, 0.42, 0], [Math.PI / 2, 0, 0]); // ourlet brodé
+  part(g, box(0.16, 0.7, 0.02), shirt, [0, 1.25, 0.27]); // devant ouvert
+  part(g, box(0.05, 1.1, 0.02), gold, [0.1, 0.98, 0.29], [0, 0, -0.04]);
+  part(g, box(0.05, 1.1, 0.02), gold, [-0.1, 0.98, 0.29], [0, 0, 0.04]);
+  part(g, cyl(0.06, 0.06, 0.012, 14), gold, [0, 1.3, 0.3], [Math.PI / 2, 0, 0]); // médaillon
+  part(g, cyl(0.24, 0.3, 0.16, 16), coat, [0, 1.66, -0.02]); // col relevé
+  part(g, cyl(0.15, 0.19, 0.2, 14), sk, [0, 1.72, 0.02]);
   const head = new THREE.Group();
-  head.position.set(0, 1.9, 0.02);
-  part(head, new THREE.SphereGeometry(0.22, 28, 20), sk, [0, 0.02, -0.02], [0, 0, 0], [1.32, 0.8, 1.25]); // crâne large et bas
-  part(head, new THREE.SphereGeometry(0.18, 24, 16), sk, [0, -0.09, 0.07], [0.2, 0, 0], [1.38, 0.72, 1.18]); // mâchoire puissante
-  part(head, box(0.34, 0.04, 0.08), sk, [0, 0.07, 0.2], [0.3, 0, 0]); // arcade
-  for (const x of [0.12, -0.12]) part(head, new THREE.SphereGeometry(0.06, 16, 12), eye, [x, 0.02, 0.215], [0, x * 2, 0], [1.25, 0.95, 0.55]);
+  head.position.set(0, 1.92, 0.03);
+  part(head, new THREE.SphereGeometry(0.22, 28, 20), sk, [0, 0.0, -0.02], [0, 0, 0], [1.3, 0.78, 1.2]); // crâne large et bas
+  part(head, new THREE.SphereGeometry(0.19, 24, 16), sk, [0, -0.08, 0.08], [0.15, 0, 0], [1.35, 0.68, 1.22]); // large mâchoire
+  part(head, box(0.3, 0.008, 0.02), new THREE.MeshStandardMaterial({ color: 0x0a2420 }), [0, -0.1, 0.285], [0, 0, 0]); // fente de la bouche
+  const eyeM = new THREE.MeshStandardMaterial({ color: 0xd8a030, emissive: 0x3a2000, emissiveIntensity: 0.6, roughness: 0.08, metalness: 0.2 });
+  const pupil = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.05 });
+  for (const x of [0.13, -0.13]) {
+    part(head, new THREE.SphereGeometry(0.075, 16, 12), sk, [x, 0.07, 0.15], [0, 0, 0], [1, 0.85, 1]); // orbite saillante
+    part(head, new THREE.SphereGeometry(0.058, 16, 12), eyeM, [x, 0.065, 0.19]);
+    part(head, box(0.012, 0.05, 0.01), pupil, [x, 0.065, 0.247]);
+    part(head, new THREE.SphereGeometry(0.062, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.42), sk, [x, 0.07, 0.19], [0.25, 0, 0]); // paupière lourde
+  }
   const vib = [];
-  const vm = new THREE.MeshStandardMaterial({ color: 0x8a9a9c, roughness: 0.3 });
-  for (const sx of [1, -1]) for (let i = 0; i < 4; i++) {
+  const vm = new THREE.MeshStandardMaterial({ color: 0xe8ecd8, roughness: 0.3 });
+  for (const sx of [1, -1]) for (let i = 0; i < 3; i++) {
     const v = new THREE.Group();
-    v.position.set(sx * 0.2, -0.1 + i * 0.022, 0.17);
-    const m = new THREE.Mesh(cyl(0.002, 0.004, 0.11, 4), vm);
-    m.position.x = sx * 0.055;
-    m.rotation.z = sx * (Math.PI / 2 - 0.12 + i * 0.09);
+    v.position.set(sx * 0.2, -0.06 + i * 0.02, 0.2);
+    const m = new THREE.Mesh(cyl(0.0015, 0.003, 0.26, 4), vm);
+    m.position.x = sx * 0.12;
+    m.rotation.z = sx * (Math.PI / 2 + 0.05 - i * 0.08);
     v.add(m);
     head.add(v);
     vib.push(v);
   }
   g.add(head);
   const hand = (parent) => {
+    part(parent, cyl(0.1, 0.1, 0.12, 12), gold, [0, -0.5, 0]); // manchette brodée
     part(parent, new THREE.SphereGeometry(0.075, 10, 8), sk, [0, -0.66, 0], [0, 0, 0], [1.25, 0.5, 1.5]);
-    part(parent, box(0.15, 0.01, 0.12), new THREE.MeshStandardMaterial({ color: skin, transparent: true, opacity: 0.6, roughness: 0.3 }), [0, -0.7, 0.05]); // palmure
+    part(parent, box(0.15, 0.01, 0.12), new THREE.MeshStandardMaterial({ map: scaleTexture(old), transparent: true, opacity: 0.7, roughness: 0.3 }), [0, -0.7, 0.05]); // palmure
   };
-  const armL = new THREE.Group(); armL.position.set(0.38, 1.5, 0); part(armL, new THREE.CapsuleGeometry(0.085, 0.5, 4, 8), su, [0, -0.3, 0]); hand(armL); g.add(armL);
-  const armR = new THREE.Group(); armR.position.set(-0.38, 1.5, 0); part(armR, new THREE.CapsuleGeometry(0.085, 0.5, 4, 8), su, [0, -0.3, 0]); hand(armR); g.add(armR);
-  for (const x of [0.14, -0.14]) part(g, new THREE.CapsuleGeometry(0.11, 0.65, 4, 8), su, [x, 0.45, 0]);
+  const armL = new THREE.Group(); armL.position.set(0.4, 1.5, 0); part(armL, new THREE.CapsuleGeometry(0.09, 0.45, 4, 8), coat, [0, -0.27, 0]); hand(armL); g.add(armL);
+  const armR = new THREE.Group(); armR.position.set(-0.4, 1.5, 0); part(armR, new THREE.CapsuleGeometry(0.09, 0.45, 4, 8), coat, [0, -0.27, 0]); hand(armR); g.add(armR);
+  for (const x of [0.14, -0.14]) part(g, new THREE.CapsuleGeometry(0.1, 0.5, 4, 8), shirt, [x, 0.3, 0]);
   g.userData = { head, armL, armR, vib };
   return g;
 }
 
-// Tête casquée pour les plans de cockpit (Balam humain / Glide alyde).
-export function pilotBust(kind = 'balam') {
-  const g = kind === 'glide' ? alyde() : human({ body: 0x3a3226 });
-  if (kind === 'balam') {
-    const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.19, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.62), new THREE.MeshStandardMaterial({ color: 0x55524c, roughness: 0.5, metalness: 0.3 }));
-    helmet.position.set(0, 1.76, -0.02);
-    helmet.rotation.x = -0.35;
-    g.add(helmet);
-  }
+// Balam, d'après la couverture : cheveux châtains ondulés, peau hâlée, blouson d'aviateur en cuir à col de mouton,
+// écharpe crème, lunettes de vol sur la poitrine, sangles et ceinturon.
+export function balam() {
+  const g = new THREE.Group();
+  const leather = new THREE.MeshStandardMaterial({ color: 0x6a4426, roughness: 0.5, metalness: 0.05 });
+  const fleece = new THREE.MeshStandardMaterial({ color: 0xd2bc8a, roughness: 1 });
+  const cream = new THREE.MeshStandardMaterial({ color: 0xe0d6c0, roughness: 0.9 });
+  const pants = new THREE.MeshStandardMaterial({ color: 0x4a4232, roughness: 0.8 });
+  const strap = new THREE.MeshStandardMaterial({ color: 0x3a2614, roughness: 0.6 });
+  const brass = new THREE.MeshStandardMaterial({ color: 0xb08a40, metalness: 0.9, roughness: 0.3 });
+  const sk = new THREE.MeshStandardMaterial({ color: 0xb07a52, roughness: 0.55 });
+  const hr = new THREE.MeshStandardMaterial({ color: 0x5c3a1e, roughness: 0.85 });
+  part(g, new THREE.CapsuleGeometry(0.26, 0.5, 4, 12), leather, [0, 1.2, 0], [0, 0, 0], [1.15, 1, 0.8]);
+  part(g, new THREE.TorusGeometry(0.15, 0.06, 8, 20), fleece, [0, 1.56, 0], [Math.PI / 2, 0, 0]); // col de mouton
+  part(g, box(0.16, 0.2, 0.05), cream, [0, 1.42, 0.2]); // écharpe
+  for (const x of [0.06, -0.06]) part(g, cyl(0.045, 0.045, 0.04, 14), brass, [x, 1.3, 0.24], [Math.PI / 2, 0, 0]); // lunettes de vol
+  part(g, box(0.06, 0.62, 0.03), strap, [0.05, 1.18, 0.23], [0, 0, 0.55]); // sangle en travers
+  part(g, cyl(0.29, 0.29, 0.07, 18), strap, [0, 0.88, 0]); // ceinturon
+  part(g, box(0.07, 0.06, 0.03), brass, [0, 0.88, 0.29]);
+  part(g, cyl(0.07, 0.08, 0.12, 8), sk, [0, 1.62, 0]);
+  const head = part(g, new THREE.SphereGeometry(0.13, 18, 14), sk, [0, 1.76, 0], [0, 0, 0], [0.9, 1.12, 1]);
+  part(g, new THREE.SphereGeometry(0.15, 20, 14, 0, Math.PI * 2, 0, Math.PI / 1.9), hr, [0, 1.79, -0.02], [-0.2, 0, 0], [1.05, 1.0, 1.1]); // chevelure ondulée
+  part(g, new THREE.SphereGeometry(0.06, 10, 8), hr, [0.04, 1.87, 0.09], [0, 0, 0.4], [1.6, 0.5, 0.9]); // mèche sur le front
+  part(g, new THREE.SphereGeometry(0.07, 10, 8), hr, [0, 1.72, -0.12], [0, 0, 0], [1.6, 0.9, 0.7]); // nuque
+  const armL = new THREE.Group(); armL.position.set(0.32, 1.45, 0); part(armL, new THREE.CapsuleGeometry(0.075, 0.48, 4, 8), leather, [0, -0.3, 0]); g.add(armL);
+  const armR = new THREE.Group(); armR.position.set(-0.32, 1.45, 0); part(armR, new THREE.CapsuleGeometry(0.075, 0.48, 4, 8), leather, [0, -0.3, 0]); g.add(armR);
+  for (const x of [0.11, -0.11]) part(g, new THREE.CapsuleGeometry(0.09, 0.62, 4, 8), pants, [x, 0.42, 0]);
+  g.userData = { head, armL, armR };
   return g;
+}
+
+// Fara Dresde, d'après la couverture : combinaison blanche à bandes rouges, écusson ailé, cheveux châtains relevés.
+export function fara() {
+  const g = new THREE.Group();
+  const suit = new THREE.MeshStandardMaterial({ color: 0xe8e4dc, roughness: 0.5 });
+  const red = new THREE.MeshStandardMaterial({ color: 0xa82a24, roughness: 0.5 });
+  const sk = new THREE.MeshStandardMaterial({ color: 0xd0a080, roughness: 0.55 });
+  const hr = new THREE.MeshStandardMaterial({ color: 0x5a3820, roughness: 0.85 });
+  const belt = new THREE.MeshStandardMaterial({ color: 0x5a5a58, roughness: 0.6 });
+  part(g, new THREE.CapsuleGeometry(0.23, 0.55, 4, 12), suit, [0, 1.2, 0], [0, 0, 0], [1.05, 1, 0.75]);
+  for (const sx of [1, -1]) part(g, box(0.06, 0.35, 0.36), red, [sx * 0.22, 1.42, 0], [0, 0, sx * -0.4]); // bandes d'épaule
+  part(g, cyl(0.05, 0.05, 0.01, 14), new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.8, roughness: 0.3 }), [0.12, 1.36, 0.19], [Math.PI / 2, 0, 0]); // écusson ailé
+  part(g, cyl(0.25, 0.25, 0.06, 18), belt, [0, 0.88, 0]);
+  part(g, cyl(0.07, 0.08, 0.12, 8), sk, [0, 1.6, 0]);
+  const head = part(g, new THREE.SphereGeometry(0.125, 18, 14), sk, [0, 1.74, 0], [0, 0, 0], [0.9, 1.1, 1]);
+  part(g, new THREE.SphereGeometry(0.135, 18, 14, 0, Math.PI * 2, 0, Math.PI / 1.9), hr, [0, 1.77, -0.012]);
+  part(g, new THREE.SphereGeometry(0.07, 10, 8), hr, [0, 1.8, -0.15]); // chignon
+  part(g, cyl(0.012, 0.02, 0.15, 6), hr, [0.1, 1.68, 0.08], [0, 0, 0.1]); // mèches
+  part(g, cyl(0.012, 0.02, 0.15, 6), hr, [-0.1, 1.68, 0.08], [0, 0, -0.1]);
+  const arm = (x) => {
+    const a = new THREE.Group();
+    a.position.set(x, 1.45, 0);
+    part(a, new THREE.CapsuleGeometry(0.06, 0.5, 4, 8), suit, [0, -0.3, 0]);
+    part(a, box(0.13, 0.4, 0.03), red, [0, -0.3, 0.05]);
+    g.add(a);
+    return a;
+  };
+  const armL = arm(0.29), armR = arm(-0.29);
+  for (const x of [0.1, -0.1]) part(g, new THREE.CapsuleGeometry(0.08, 0.65, 4, 8), suit, [x, 0.42, 0]);
+  g.userData = { head, armL, armR };
+  return g;
+}
+
+// Pilote en cockpit (Balam sans casque, comme sur la couverture ; Glide alyde).
+export function pilotBust(kind = 'balam') {
+  return kind === 'glide' ? alyde() : balam();
 }
 
 // Intérieur de cockpit simplifié : montants, tableau de bord avec un écran à texture.

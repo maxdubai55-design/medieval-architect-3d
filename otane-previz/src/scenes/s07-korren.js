@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { starfield, nebulaSky, planet, glow, sparkCloud, bolt, shootBolt } from '../lib/fx.js';
-import { alyde, human, hullMat, glassMat, box, cyl, lightMat, cockpitInterior, pilotBust, recuperateur, debrisField, greebles } from '../lib/models.js';
+import { alyde, human, hullMat, glassMat, box, cyl, lightMat, cockpitInterior, pilotBust, recuperateur, debrisField, greebles, balam, fara } from '../lib/models.js';
 import { keys, ramp, pulse, inv, smooth, lerp } from '../lib/util.js';
 import { panel, text, alert, blip } from '../lib/hud.js';
 
@@ -132,7 +132,7 @@ export default {
     scene.add(S.struct);
 
     S.glide = alyde();
-    S.balam = human({ body: 0x2e2a24 });
+    S.balam = balam();
     scene.add(S.glide, S.balam);
     S.comm = glow(0x60c0ff, 0.25, 0.9, 'hard');
     scene.add(S.comm);
@@ -172,7 +172,7 @@ export default {
     S.pal.add(S.field);
     S.ore = debrisField({ count: 120, center: [PAL, 0, -60], size: [140, 60, 90], scale: [1.5, 8], seed: 81, palette: ['rust', 'dark', 'worn'] });
     scene.add(S.ore);
-    S.korren = alyde({ skin: 0x5a6668, suit: 0x3a3428 });
+    S.korren = alyde({ old: true });
     scene.add(S.korren);
     S.bar = new THREE.Mesh(cyl(0.04, 0.04, 1.4, 6), new THREE.MeshStandardMaterial({ color: 0x9a9a9a, metalness: 0.9 }));
     S.korren.userData.armR.add(S.bar);
@@ -180,7 +180,7 @@ export default {
     S.bar.rotation.x = Math.PI / 2;
     S.guards = [human({ body: 0x1a1a1a }), human({ body: 0x1a1a1a }), human({ body: 0x222018 })];
     S.guards.forEach((g) => scene.add(g));
-    S.thief = human({ body: 0x3a3226 });
+    S.thief = balam();
     scene.add(S.thief);
     S.coffret = new THREE.Mesh(box(0.7, 0.2, 0.45), new THREE.MeshStandardMaterial({ color: 0x2b2420, metalness: 0.5 }));
     scene.add(S.coffret);

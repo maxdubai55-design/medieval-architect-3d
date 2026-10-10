@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { glow, sparkCloud } from '../lib/fx.js';
-import { heart, human, alyde, hullMat, glassMat, box, cyl, greebles, lightMat } from '../lib/models.js';
+import { heart, human, alyde, hullMat, glassMat, box, cyl, greebles, lightMat, balam, fara } from '../lib/models.js';
 import { keys, ramp, pulse, inv, smooth, lerp, rng } from '../lib/util.js';
 import { panel, text } from '../lib/hud.js';
 
@@ -169,9 +169,9 @@ export default {
     scene.add(S.cart);
 
     // Personnages
-    S.balam = human({ body: 0x3a3226 });
+    S.balam = balam();
     S.glide = alyde();
-    S.fara = human({ body: 0x22262e, female: true, skin: 0x9a7a66 });
+    S.fara = fara();
     S.kovar = human({ body: 0x1c2024, hair: 0x8a8a88, skin: 0x8a6e5c });
     S.sci = human({ body: 0x405048, female: true, skin: 0x6e7e82, hair: 0x101010 });
     S.agents = [human({ body: 0xd8dce0 }), human({ body: 0xd8dce0 })];

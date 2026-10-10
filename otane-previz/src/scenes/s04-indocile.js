@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { starfield, nebulaSky, planet, glow, sparkCloud, bolt, shootBolt } from '../lib/fx.js';
-import { indocile, otaneFighter, hangar, cradle, pik, human, alyde, couronne, cockpitInterior, pilotBust, hullMat, box } from '../lib/models.js';
+import { indocile, otaneFighter, hangar, cradle, pik, human, alyde, couronne, cockpitInterior, pilotBust, hullMat, box, balam, fara } from '../lib/models.js';
 import { keys, ramp, pulse, inv, smooth, lerp } from '../lib/util.js';
 import { panel, text, alert, gauge } from '../lib/hud.js';
 
@@ -156,7 +156,7 @@ export default {
     scene.add(S.pik);
     S.board = new THREE.Mesh(box(0.5, 0.06, 1.1), hullMat('dark'));
     scene.add(S.board);
-    S.balam = human({ body: 0x3a3226 });
+    S.balam = balam();
     S.balam.position.set(2.6, 0, 6);
     S.balam.rotation.y = -2.4;
     scene.add(S.balam);
@@ -164,7 +164,7 @@ export default {
     S.glide.position.set(-2.5, 0, 6.5);
     S.glide.rotation.y = 2.6;
     scene.add(S.glide);
-    S.fara = human({ body: 0x22262e, female: true, skin: 0x9a7a66 });
+    S.fara = fara();
     S.fara.position.set(3.6, 0, 1.0);
     S.fara.rotation.y = -1.6;
     scene.add(S.fara);

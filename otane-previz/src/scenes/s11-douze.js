@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { starfield, nebulaSky, planet, glow, filaments, sparkCloud } from '../lib/fx.js';
-import { indocile, hangar, pik, human, alyde, couronne, traffic, heart, hullMat, glassMat, box, cockpitInterior, pilotBust } from '../lib/models.js';
+import { indocile, hangar, pik, human, alyde, couronne, traffic, heart, hullMat, glassMat, box, cockpitInterior, pilotBust, balam, fara } from '../lib/models.js';
 import { keys, ramp, pulse, inv, smooth, lerp, rng } from '../lib/util.js';
 import { text } from '../lib/hud.js';
 
@@ -36,7 +36,7 @@ export default {
       t: [27, 33], plan: 'Insert', optique: '85 mm', mouvement: 'Fixe',
       lumiere: 'Pinceau blanc sur la plaque froide',
       intention: "Tess repeint autour de la brûlure sans l'effacer. La cicatrice reste dans le dessin.",
-      cam: () => ({ pos: [2.1, 2.2, 9.6], look: [0.62, 2.12, 8.7], fov: 30 }),
+      cam: () => ({ pos: [2.0, 2.15, 8.9], look: [0.74, 2.0, 8.0], fov: 30 }),
     },
     {
       t: [33, 50], plan: 'Plan rapproché, chambre du Cœur', optique: '50 mm', mouvement: 'Lent travelling avant sur la plaque',
@@ -88,10 +88,10 @@ export default {
     scene.add(S.tess);
     S.mara = human({ body: 0x3a2a2a, female: true, hair: 0x5a5a5a });
     S.brek = human({ body: 0x2a3038 });
-    S.fara = human({ body: 0x22262e, female: true, skin: 0x9a7a66 });
+    S.fara = fara();
     S.kovar = human({ body: 0x1c2024, hair: 0x8a8a88 });
     S.sava = human({ body: 0x3a3a30, female: true, hair: 0x9a9a98 });
-    S.balam = human({ body: 0x3a3226 });
+    S.balam = balam();
     S.glide = alyde();
     for (const c of [S.mara, S.brek, S.fara, S.kovar, S.sava, S.balam, S.glide]) scene.add(c);
     S.crowd = [];
@@ -129,7 +129,7 @@ export default {
     S.cGlide.position.set(CH - 1.4, 0, 0.6);
     S.cGlide.rotation.y = Math.PI / 2 + 0.3;
     scene.add(S.cGlide);
-    S.cBalam = human({ body: 0x3a3226 });
+    S.cBalam = balam();
     S.cBalam.position.set(CH + 1.4, 0, 0.9);
     S.cBalam.rotation.y = -Math.PI / 2 - 0.4;
     scene.add(S.cBalam);
@@ -190,10 +190,10 @@ export default {
     place(S.balam, [2.6, 0, 9.8], -2.4, t < 27);
     place(S.glide, [-2.6, 0, 9.2], 2.4, t < 27);
     place(S.tess, [keys([[12, 14], [15, 3.2]], t), 0, keys([[12, 18], [15, 8.6]], t)], -2.2, t > 12 && t < 33);
-    if (t >= 27 && t < 33) place(S.tess, [1.5, 0, 9.4], -Math.PI / 2 - 0.4, true);
+    if (t >= 27 && t < 33) place(S.tess, [1.6, 0, 8.7], -Math.PI / 2 - 0.4, true);
     S.tess.userData.armR.rotation.set(t >= 27 && t < 33 ? -2.1 + Math.sin(t * 6) * 0.15 : 0, 0, 0);
     S.brush.visible = t >= 27 && t < 33;
-    S.brush.position.set(0.85, 2.12 + Math.sin(t * 6) * 0.04, 8.75);
+    S.brush.position.set(0.88, 2.02 + Math.sin(t * 6) * 0.04, 8.05);
     const burnt = S.ship.userData.mark;
     if (burnt) burnt.material.opacity = 1;
     place(S.kovar, [0, 0, 14], 0, t >= 18 && t < 27);
