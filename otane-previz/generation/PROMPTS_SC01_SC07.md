@@ -27,23 +27,29 @@ Les prompts sont en anglais, parce que ces outils sont entraînés surtout sur d
 
 ## Fiches de référence (à coller telles quelles)
 
-Ce qui vient du roman : l'âge de Balam, ses cheveux collés au front, la trace noire sur la joue ; pour Glide, la tête large, la peau lisse, la mâchoire puissante, les courtes vibrisses, les yeux sombres, les fentes auditives et les mains palmées. Le reste (couleur de peau, de cheveux, nombre de doigts, tenues) est une proposition à valider avant de générer quoi que ce soit.
+Les fiches suivent la couverture de l'auteur (`references/couverture_personnages.png`). Donner cette image en référence de personnage (visage, costume) au générateur, en plus du texte.
 
-**BALAM**
-> `BALAM: human man, 35 years old, lean and wiry, olive-tan skin, short dark messy hair stuck to his forehead with sweat, three-day stubble, tired but amused dark eyes, a black grease smear on his left cheek. Wears a scuffed off-white EVA suit with mismatched repaired patches, a gold-tinted visor, a small orange wrist display on the left forearm.`
+**BALAM** (Chac Balam)
+> `BALAM: human man, about 35 to 40, rugged handsome face, tanned weathered skin, thick wavy chestnut-brown hair, faint stubble, steady grey-blue eyes, strong jaw. Wears a worn brown leather flight jacket with a shearling collar, a cream scarf, aviator goggles hanging on his chest, leather cross-straps and a heavy utility belt, round squadron patch on the left sleeve.`
 
-Sans casque, en vol : `BALAM wearing a worn brown flight jacket over a grey pressure undersuit, helmet with the visor raised.`
+En sortie extravéhiculaire : `BALAM in a scuffed off-white EVA suit with repaired patches and a gold-tinted visor, a small orange wrist display on the left forearm; face visible through the visor matches the reference.`
 
-**GLIDE** (Alyde : espèce semi-aquatique, ni humaine ni animale)
-> `GLIDE: non-human alien of the Alyde species, humanoid body, broad low skull wider than a human head, smooth hairless slate-grey skin with a faint wet sheen, heavy powerful jaw, large fully black glossy eyes without visible whites, short pale whisker-like vibrissae on both sides of the muzzle, thin auditory slits instead of ears, webbed hands with four long fingers. Calm, still, economical movements. Wears a dark teal close-fitting pilot suit.`
+**GLIDE** (Alyde)
+> `GLIDE: Alyde alien, humanoid body, amphibian reptilian head with a broad low skull and powerful wide jaw, fine textured blue-green scales shading to turquoise on the crown and pale green on the throat, large amber-gold eyes with heavy lids, long thin pale whiskers on both sides of the muzzle, webbed scaled hands. Calm, watchful, arms often crossed. Wears a long dark teal coat with gold-embroidered trim and cuffs, a medallion on a chain.`
 
-Note : Glide est le personnage le plus difficile à obtenir. Générer d'abord une dizaine de portraits de face et de profil, en choisir un, puis l'imposer comme référence de visage dans tous les plans. Éviter les mots « seal », « otter » ou « fish » : ils tirent vers l'animal.
+Note : Glide reste le personnage le plus difficile à stabiliser. Partir du visage de la couverture comme référence, générer une dizaine de portraits de face et de profil, en retenir un, puis l'imposer dans tous les plans.
+
+**FARA DRESDE** (séquences suivantes)
+> `FARA: human woman, about 30, chestnut-brown hair pulled back in a loose bun with strands framing her face, light freckles, determined hazel eyes. Wears a white flight suit with red stripes on the shoulders and sleeves, a round winged insignia patch, a utility belt.`
 
 **KORREN** (souvenir uniquement)
 > `KORREN: older Alyde, same species as GLIDE, thinner, skin paler and mottled with age, vibrissae longer and white, wears a faded salt-stained navigator's coat over a worn pressure suit.`
 
 **Le récupérateur de Balam**
 > `a small ugly salvage ship, short and asymmetric, single-seat bubble cockpit glowing warm orange, stripped bare-metal nose, ventral cargo hold, one mismatched armor plate bolted on the right flank, a docking arm on the left, two small engines, decades of welds and patches`
+
+**L'INDOCILE** (séquences suivantes)
+> `L'INDOCILE: an old two-seat fighter, long riveted silver-white hull with brass-gold panels and trim, tandem bubble canopy, narrow pointed nose, two large engines on the flanks, small swept fins, the name "L'INDOCILE" painted in dark letters on the flank, weathered and patched but polished, warm engine glow.`
 
 **Le vaisseau de Glide**
 > `a low wide predator-like ship, broad flat prow, two separate engine nacelles on outriggers, dark teal hull, cold blue cockpit light, clean and maintained`
@@ -110,7 +116,7 @@ Note : plan spectaculaire, à générer en plusieurs essais.
 Note : la liste des dégâts s'incruste au montage.
 
 ### Plan 12 — 1:32 à 1:44 · Plan rapproché cockpit, 35 mm
-> `Over-the-shoulder shot inside a cramped, patched cockpit glowing warm orange: BALAM, helmet off, sweat and a grease smear on his face. His screens blank out for a fraction of a second, then the whole cockpit turns red with alarm lights. He freezes, recognizing something.` + BALAM (sans casque) + règles communes
+> `Over-the-shoulder shot inside a cramped, patched cockpit glowing warm orange: BALAM, helmet off, sweat and a grease smear on his face. His screens blank out for a fraction of a second, then the whole cockpit turns red with alarm lights. He freezes, recognizing something.` + BALAM + règles communes
 Deux prises : le calme orange, puis la bascule au rouge.
 
 ### Plan 13 — 1:44 à 1:48 · Insert, 50 mm, plongée
@@ -133,14 +139,14 @@ Référence : `references/sc07_plan01.jpg`
 Mouvement : `static, imperceptible drift`
 
 ### Plan 02 — 0:10 à 0:18 · Plan rapproché, 85 mm
-> `Close shot of GLIDE's webbed hand holding a small communicator; its screen glows soft blue on the wet grey skin, showing an unread message. He does not open it. Behind him, out of focus, a human figure enters the gallery.` + GLIDE + règles communes
+> `Close shot of GLIDE's webbed hand holding a small communicator; its screen glows soft blue on the blue-green scales, showing an unread message. He does not open it. Behind him, out of focus, a human figure enters the gallery.` + GLIDE + règles communes
 
 ### Plan 03 — 0:18 à 0:30 · Plan à deux, profils, 50 mm
-> `Two-shot in profile against the window: GLIDE at the rail, BALAM standing a meter away, both faces in shadow, rim-lit in cold blue by NÉRÉA. Neither moves much. Tension, stillness.` + GLIDE + BALAM (veste) + GALERIE + règles communes
+> `Two-shot in profile against the window: GLIDE at the rail, BALAM standing a meter away, both faces in shadow, rim-lit in cold blue by NÉRÉA. Neither moves much. Tension, stillness.` + GLIDE + BALAM + GALERIE + règles communes
 Mouvement : `very slow lateral dolly`
 
 ### Plan 04 — 0:30 à 0:42 · Gros plan Glide, 85 mm
-> `Close-up of GLIDE's face in three-quarter profile, mostly in shadow, cold blue rim light along the broad skull and jaw, a single reflection in his large black eye, vibrissae trembling slightly. He is speaking quietly about someone he loved.` + GLIDE + règles communes
+> `Close-up of GLIDE's face in three-quarter profile, mostly in shadow, cold blue rim light along the broad skull and jaw, a single reflection in his large amber eye, vibrissae trembling slightly. He is speaking quietly about someone he loved.` + GLIDE + règles communes
 Mouvement : `imperceptible push in`
 
 ### Plan 05 — 0:42 à 0:56 · Souvenir, plan large, 24 mm, caméra portée
@@ -148,12 +154,12 @@ Mouvement : `imperceptible push in`
 Trois prises : l'entrée de Korren, le tir, la chute à travers le champ.
 
 ### Plan 06 — 0:56 à 1:10 · Souvenir, cockpit, 35 mm puis insert
-> `Desaturated memory. Inside the salvage ship cockpit, over BALAM's shoulder: on the screen, a small red suit beacon blinks in the top-left corner, far from the green jump window in the center. Then close-up on his hands: right hand on the control stick, left hand on the jump arming lever. The stick turns two or three degrees toward the beacon, then corrects back. The left hand arms the jump, then engages it.` + BALAM (jeune, sans trace de graisse) + règles communes, ajouter `desaturated bleach-bypass grade`
+> `Desaturated memory. Inside the salvage ship cockpit, over BALAM's shoulder: on the screen, a small red suit beacon blinks in the top-left corner, far from the green jump window in the center. Then close-up on his hands: right hand on the control stick, left hand on the jump arming lever. The stick turns two or three degrees toward the beacon, then corrects back. The left hand arms the jump, then engages it.` + BALAM (quelques années plus jeune) + règles communes, ajouter `desaturated bleach-bypass grade`
 Deux prises : l'écran, puis les mains.
 Note : c'est le plan le plus important du film. Les mains doivent raconter les quatre choix successifs.
 
 ### Plan 07 — 1:10 à 1:20 · Plan moyen, 35 mm, caméra portée
-> `Medium shot in the gallery: GLIDE strikes BALAM once, not with full force; BALAM slams shoulder-first against the window glass and does not raise his hands. NÉRÉA behind them. Then GLIDE grabs him by the collar.` + GLIDE + BALAM (veste) + GALERIE + règles communes
+> `Medium shot in the gallery: GLIDE strikes BALAM once, not with full force; BALAM slams shoulder-first against the window glass and does not raise his hands. NÉRÉA behind them. Then GLIDE grabs him by the collar.` + GLIDE + BALAM + GALERIE + règles communes
 Mouvement : `handheld, one hard jolt on the impact`
 
 ### Plan 08 — 1:20 à 1:32 · Champ / contrechamp serré, 85 mm
