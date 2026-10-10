@@ -1,0 +1,17 @@
+{
+  "name": "otane-previz",
+  "version": "1.0.0",
+  "description": "Prévisualisation 3D des scènes clés du roman OTANE — Le Cœur des mondes",
+  "main": "index.js",
+  "scripts": {
+    "still": "node tools/still.mjs",
+    "render": "node tools/render.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "type": "module"
+}
